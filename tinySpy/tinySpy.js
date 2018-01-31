@@ -7,12 +7,16 @@
     inputArea:document.querySelector("#spyInput")
   };
   var commandList = {
-    endTag:"spydone"
+    endTag:"spd",
+    help:"-c",
+    back:"-b"
   };
   var tipList = {
-    commandTip:"Use: -c spydone to check the command",
-    commands:"tinyspy.print() "+commandList.endTag+":print messages<br/>"
-            +"tinyspy.clear() "+commandList.endTag+"spydone:clear screen",
+    commandTip:"Use:"+commandList.help+" "+commandList.endTag+" to check the command</br>"
+              +"Use:"+commandList.back+" "+commandList.endTag+" to get latest history",
+    commands:"Run tinyspy.print() "+commandList.endTag+":print messages<br/>"
+            +"Run tinyspy.clear() "+commandList.endTag+":clear screen<br/>"
+            +"Input codes end with "+commandList.endTag+":execute the codes",
             
   };
   var commonTool = {
@@ -21,7 +25,7 @@
           this.appendScreen(dom);
       },
       appendScreen:function(dom){
-        domCollection.screen.appendChild(dom);  
+        document.querySelector(".spyScreen").appendChild(dom);  
       },
       getDom:function(type,context){
         var dom = document.createElement(type);
@@ -29,7 +33,7 @@
         return dom;
       },
       clear:function(){
-        domCollection.screen.innerHTML="";
+        document.querySelector(".spyScreen").innerHTML="";
       },
       command:function(text){
           window.eval(text);
@@ -38,31 +42,40 @@
   var eventHandler = {
       listenInputArea:function(){
         var that = this;
-        this.bindEvent(domCollection.inputArea,"keyup",function(){
-              that.handleInput(domCollection.inputArea.value);
+        this.bindEvent(document.querySelector("#spyInput"),"keyup",function(){
+              that.handleInput(document.querySelector("#spyInput").value);
         });
-        this.bindEvent(domCollection.inputArea,"paste",function(e){
+        this.bindEvent(document.querySelector("#spyInput"),"paste",function(e){
             var timeout = setTimeout(function(){
-              that.handleInput(domCollection.inputArea.value);
+              that.handleInput(document.querySelector("#spyInput").value);
             },100);
          }); 
       },
       allocatFunc:function(text){
           switch (text){
-             case "-c":this.showCommand();break;
-             default:this.runCommand(text);break;
+             case commandList.help:{
+               this.showCommand();
+               commandHistory.push(text);//Record
+              }break;
+             case commandList.back:this.getCommand();break;
+             default:{
+               this.runCommand(text);
+               commandHistory.push(text);//Record
+              }break;
           }
       },
       showCommand:function(){
         window.tinyspy.print(tipList.commands);
+      },
+      getCommand:function(text){
+        document.querySelector("#spyInput").value = commandHistory.pop();
       },
       handleInput:function(text){
         if(text.indexOf(commandList.endTag)>=0){
           var str = "\\s+("+commandList.endTag+"){1}";
           var reg = new RegExp(str);
           var dealedText = text.replace(reg,"");
-          domCollection.inputArea.value = "";
-          commandHistory.push(dealedText);//Record
+          document.querySelector("#spyInput").value = "";
           this.allocatFunc(dealedText); 
         }
       },
@@ -70,15 +83,25 @@
         commonTool.command(text);
       },
       close:function(){
-        this.bindEvent(domCollection.closeBtn,"click",function(){
-            domCollection.stage.classList.toggle("hideSpyDiv");
-            domCollection.closeBtn.classList.toggle("spyHideStyle");
+        this.bindEvent(document.querySelector("#spyHide"),"click",function(){
+            document.querySelector(".tinySpy").classList.toggle("hideSpyDiv");
+            document.querySelector("#spyHide").classList.toggle("spyHideStyle");
         });
       },
       bindEvent:function(ele,event,func){
         ele.addEventListener(event,func);
       },
+      insertDom:function(){
+         var str = '<div class="tinySpy hideSpyDiv">\
+         <div class="spyScreen" id="spyScreen"></div>\
+         <textarea type="text" id="spyInput"></textarea>\
+     </div>\
+     <span class="spyHide" id="spyHide">+</span>';
+         var dom = commonTool.getDom("div",str);
+         document.querySelector("body").appendChild(dom);
+      },
       init:function(){
+        this.insertDom();
         this.close();
         this.listenInputArea();
       }
