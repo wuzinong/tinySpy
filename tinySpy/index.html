@@ -29,7 +29,7 @@
            word-break: break-all;
            padding:0 3px;
        }
-       .tinySpy .spyInput{
+       .tinySpy #spyInput{
            width:100%;
            height:20%;
            color:black;
@@ -57,14 +57,14 @@
     
     <div class="tinySpy hideSpyDiv">
         <div class="spyScreen" id="spyScreen"></div>
-        <textarea type="text" class="spyInput"></textarea>
+        <textarea type="text" id="spyInput"></textarea>
     </div>
     <span class="spyHide" id="spyHide">+</span>
 
     <script src="tinySpy.js"></script>
     <script>
        window.onload = function(){
-           tinySpy.print("ddd")
+            
        }
     </script>
 </body>

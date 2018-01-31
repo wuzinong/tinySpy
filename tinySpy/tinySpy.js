@@ -1,13 +1,20 @@
 ;(function(){
-  
   var domCollection = {
     stage:document.querySelector(".tinySpy"),
     screen:document.querySelector(".spyScreen"),
-    closeBtn:document.querySelector("#spyHide")
+    closeBtn:document.querySelector("#spyHide"),
+    inputArea:document.querySelector("#spyInput")
   };
-
+  var commandList = {
+    endTag:"spydone"
+  };
+  var tipList = {
+    commandTip:"Use: -c spydone to check the command",
+    commands:"tinyspy.print() "+commandList.endTag+":print messages<br/>"
+            +"tinyspy.clear() "+commandList.endTag+"spydone:clear screen",
+            
+  };
   var commonTool = {
-      
       print:function(context){
           var dom = this.getDom("p",context);
           this.appendScreen(dom);
@@ -20,12 +27,40 @@
         dom.innerHTML = context;
         return dom;
       },
-      clearScreen:function(){
+      clear:function(){
         domCollection.screen.innerHTML="";
       }
   };
   var eventHandler = {
-      
+      listenInputArea:function(){
+        var that = this;
+        this.bindEvent(domCollection.inputArea,"keyup",function(){
+              that.handleInput(domCollection.inputArea.value);
+        });
+        this.bindEvent(domCollection.inputArea,"paste",function(e){
+            var timeout = setTimeout(function(){
+              that.handleInput(domCollection.inputArea.value);
+            },100);
+         }); 
+      },
+      allocatFunc:function(text){
+          switch (text){
+             case "-c":this.showCommand();break;
+             default:window.eval(text);break;
+          };
+      },
+      showCommand:function(){
+        window.tinyspy.print(tipList.commands);
+      },
+      handleInput:function(text){
+        if(text.indexOf(commandList.endTag)>=0){
+          var str = "\\s+("+commandList.endTag+"){1}";
+          var reg = new RegExp(str);
+          var dealedText = text.replace(reg,"");
+          domCollection.inputArea.value = "";
+          this.allocatFunc(dealedText); 
+        }
+      },
       close:function(){
         this.bindEvent(domCollection.closeBtn,"click",function(){
             domCollection.stage.classList.toggle("hideSpyDiv");
@@ -37,13 +72,17 @@
       },
       init:function(){
         this.close();
+        this.listenInputArea();
       }
   };
 
+  
+  var tinyspy = function(){
+    //Todo
+  };
+  tinyspy.prototype = commonTool;
+  tinyspy.prototype.constructor = tinyspy;
+  window.tinyspy = new tinyspy();
   eventHandler.init();
-  var tinySpy = function(){
-  }
-  tinySpy.prototype = commonTool;
-  tinySpy.prototype.constructor = tinySpy;
-  window.tinySpy = new tinySpy();
+  window.tinyspy.print(tipList.commandTip);
 })(window);
