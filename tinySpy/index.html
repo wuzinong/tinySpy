@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+    <title>Document</title>
+    <style>
+       *{
+           padding:0;
+           margin:0;
+       }
+
+       .tinySpy{
+           width:100%;
+           height:50%;
+           min-height: 300px;
+           background-color:black;
+           position: absolute;
+           bottom:0;
+           z-index: 99999;
+       }
+       .tinySpy .spyScreen{
+           width:100%;
+           height:80%;
+           overflow-y:scroll;
+           color:white;
+           word-break: break-all;
+           padding:0 3px;
+       }
+       .tinySpy .spyInput{
+           width:100%;
+           height:20%;
+           color:black;
+           overflow-y:scroll;
+       }
+        .spyHide{
+           color:green;
+           position: absolute;
+           right: 0px;
+           font-size: 35px;
+           bottom:47%;
+           z-index: 999999;
+           
+       }
+       .spyHideStyle{
+         transform: rotate(45deg);
+       }
+       .hideSpyDiv{
+           display: none;
+       }
+        
+    </style>
+</head>
+<body>
+    
+    <div class="tinySpy hideSpyDiv">
+        <div class="spyScreen" id="spyScreen"></div>
+        <textarea type="text" class="spyInput"></textarea>
+    </div>
+    <span class="spyHide" id="spyHide">+</span>
+
+    <script src="tinySpy.js"></script>
+    <script>
+       window.onload = function(){
+           tinySpy.print("ddd")
+       }
+    </script>
+</body>
+</html>
