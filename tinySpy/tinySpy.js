@@ -12,11 +12,11 @@
     back:"-b"
   };
   var tipList = {
-    commandTip:"Use:"+commandList.help+" "+commandList.endTag+" to check the command</br>"
-              +"Use:"+commandList.back+" "+commandList.endTag+" to get latest history",
-    commands:"Run tinyspy.print() "+commandList.endTag+":print messages<br/>"
-            +"Run tinyspy.clear() "+commandList.endTag+":clear screen<br/>"
-            +"Input codes end with "+commandList.endTag+":execute the codes",
+    commandTip:"Use:"+commandList.help+" "+commandList.endTag+" to check the command</br>"+
+               "Use:"+commandList.back+" "+commandList.endTag+" to get latest history",
+    commands:"Run tinyspy.print() "+commandList.endTag+":print messages<br/>"+
+            "Run tinyspy.clear() "+commandList.endTag+":clear screen<br/>"+
+            "Input codes end with "+commandList.endTag+":execute the codes",
             
   };
   var commonTool = {
@@ -100,8 +100,59 @@
          var dom = commonTool.getDom("div",str);
          document.querySelector("body").appendChild(dom);
       },
+      insertStyle:function(){
+
+         var str = ".tinySpy{\
+          width:100%;\
+          height:50%;\
+          min-height: 300px;\
+          background-color:black;\
+          position: absolute;\
+          bottom:0;\
+          z-index: 99999;\
+      }\
+      .tinySpy .spyScreen{\
+          width:100%;\
+          height:80%;\
+          overflow-y:scroll;\
+          color:white;\
+          word-break: break-all;\
+          padding:0 3px;\
+      }\
+      .tinySpy #spyInput{\
+          width:100%;\
+          height:20%;\
+          color:black;\
+          overflow-y:scroll;\
+      }\
+      .spyHide{\
+        color:green;\
+        position: absolute;\
+        right: 0px;\
+        font-size: 35px;\
+        bottom:47%;\
+        z-index: 999999;\
+        animation:closeAnim 1.3s ease infinite;\
+    }\
+    .spyHideStyle{\
+      transform: rotate(45deg);\
+    }\
+    .hideSpyDiv{\
+        display: none;\
+    }\
+    @keyframes closeAnim{\
+        0%{opacity: 1;}\
+        50%{opacity: .7;}\
+        100%{opacity: .5;}\
+    }";
+
+
+         var dom = commonTool.getDom("style",str);
+         document.querySelector("head").appendChild(dom);
+      },
       init:function(){
         this.insertDom();
+        this.insertStyle();
         this.close();
         this.listenInputArea();
       }
