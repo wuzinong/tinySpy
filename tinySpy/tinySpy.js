@@ -1,4 +1,5 @@
 ;(function(){
+  var commandHistory=[];
   var domCollection = {
     stage:document.querySelector(".tinySpy"),
     screen:document.querySelector(".spyScreen"),
@@ -29,6 +30,9 @@
       },
       clear:function(){
         domCollection.screen.innerHTML="";
+      },
+      command:function(text){
+          window.eval(text);
       }
   };
   var eventHandler = {
@@ -46,8 +50,8 @@
       allocatFunc:function(text){
           switch (text){
              case "-c":this.showCommand();break;
-             default:window.eval(text);break;
-          };
+             default:this.runCommand(text);break;
+          }
       },
       showCommand:function(){
         window.tinyspy.print(tipList.commands);
@@ -58,8 +62,12 @@
           var reg = new RegExp(str);
           var dealedText = text.replace(reg,"");
           domCollection.inputArea.value = "";
+          commandHistory.push(dealedText);//Record
           this.allocatFunc(dealedText); 
         }
+      },
+      runCommand:function(text){
+        commonTool.command(text);
       },
       close:function(){
         this.bindEvent(domCollection.closeBtn,"click",function(){
